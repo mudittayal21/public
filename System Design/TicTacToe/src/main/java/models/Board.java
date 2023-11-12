@@ -28,38 +28,44 @@ public class Board {
         return boardCells;
     }
 
-    public void printBoard() {
-        System.out.println();
+    public String printBoard() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("\n");
         for (int i = 0; i < this.size; i++) {
-            System.out.println(" " +
+            sb.append(" " +
                     this.boardCells.get(i).stream()
                             .map(j -> j.toString())
                             .collect(Collectors.joining(" | "))
+                    + "\n"
             );
 
             if (i < this.size - 1)
-                System.out.println("---+---+---");
+                sb.append("---+---+---\n");
         }
-        System.out.println();
+
+        return sb.toString();
     }
 
-    public void printDefaultBoard() {
-        System.out.println();
+    public String printDefaultBoard() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("\n");
         IntStream.range(0, this.size).forEach(i -> {
             int start = (i * this.size) + 1;
 
-            StringBuilder sb = new StringBuilder();
             sb.append(" ");
             sb.append(IntStream.range(start, start + this.size)
                     .mapToObj(String::valueOf)
                     .collect(Collectors.joining(" | "))
             );
-            System.out.println(sb.toString());
+            sb.append("\n");
 
             if (i < this.size - 1)
-                System.out.println("---+---+---");
+                sb.append("---+---+---\n");
         });
-        System.out.println();
+
+        return sb.toString();
     }
 
     public boolean validateCell(BoardCell boardCell) {

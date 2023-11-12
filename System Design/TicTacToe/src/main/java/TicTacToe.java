@@ -1,17 +1,12 @@
 import enums.GameSymbol;
+import helpers.ConsoleHelper;
 import models.BotPlayer;
 import models.Game;
 import models.HumanPlayer;
-import models.Player;
-
 import java.util.Scanner;
 
 public class TicTacToe {
     public static void main(String[] args) {
-        System.out.println("+----------------------------+");
-        System.out.println("|   Welcome to Tic-Tac-Toe   |");
-        System.out.println("+----------------------------+");
-
         // Creating a New Game
         Game game = createNewGame();
 
@@ -34,10 +29,10 @@ public class TicTacToe {
     private static HumanPlayer createNewHumanPlayer() {
         Scanner sc = new Scanner(System.in);
 
-        System.out.println("Enter your Name");
+        ConsoleHelper.printData("Enter your Name", true);
         String name = sc.nextLine();
 
-        System.out.println("Select your Symbol (X, O)");
+        ConsoleHelper.printData("\nSelect your Symbol (X, O)", false);
         String symbol = sc.nextLine();
         GameSymbol gameSymbol = GameSymbol.valueOf(symbol);
 

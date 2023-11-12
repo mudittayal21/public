@@ -1,6 +1,7 @@
 package models;
 
 import enums.GameStatus;
+import helpers.ConsoleHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,12 +24,9 @@ public class Game {
 
         this.gameRules();
 
-        System.out.println("------------- Starting Game -----------------");
         while (this.gameStatus == GameStatus.IN_PROGRESS) {
             this.makeMove();
         }
-
-        System.out.println("-------------- Ending Game ------------------");
 
         this.scoreCard();
     }
@@ -53,11 +51,16 @@ public class Game {
     }
 
     private void makeMove() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("GAME STATUS: " + this.gameStatus + "\n");
+
         Player player = this.getNextPlayer();
         boolean isValid = false;
 
-        System.out.println(player + "'s Turn");
-        this.board.printBoard();
+        sb.append("PLAYER: " + player + "'s Turn\n");
+        sb.append(this.board.printBoard());
+
+        ConsoleHelper.printData(sb.toString(), true);
 
         while (!isValid) {
             BoardCell boardCell = player.makeMove(this.board);
@@ -109,22 +112,33 @@ public class Game {
             }
         }
 
+        StringBuilder sb = new StringBuilder();
+
         if (isRow || isColumn || isLeftDiagonal || isRightDiagonal) {
             player.incrementScore();
             this.gameStatus = GameStatus.FINISHED;
-            System.out.println(player + " has won the game!!");
-            return;
+
+            sb.append("GAME STATUS: " + this.gameStatus + "\n");
+            sb.append(player + " has won the game!!");
+        } else {
+            // Check Draw
+            List<BoardCell> emptyCells = this.board.boardCells.stream()
+                    .flatMap(i -> i.stream())
+                    .filter(i -> i.getSymbol() == null)
+                    .collect(Collectors.toList());
+
+            if (emptyCells.size() == 0) {
+                this.gameStatus = GameStatus.DRAW;
+
+                sb.append("GAME STATUS: " + this.gameStatus + "\n");
+                sb.append("The game has been a draw!!");
+            }
         }
 
-        // Check Draw
-        List<BoardCell> emptyCells = this.board.boardCells.stream()
-                .flatMap(i -> i.stream())
-                .filter(i -> i.getSymbol() == null)
-                .collect(Collectors.toList());
-
-        if (emptyCells.size() == 0) {
-            this.gameStatus = GameStatus.DRAW;
-            System.out.println("The game has been drawed!!");
+        if (this.gameStatus != GameStatus.IN_PROGRESS) {
+            sb.append("\n");
+            sb.append(this.board.printBoard());
+            ConsoleHelper.printData(sb.toString(), true);
         }
     }
 
@@ -133,12 +147,15 @@ public class Game {
     }
 
     public void gameRules() {
-        System.out.println();
-        System.out.println("-------------  Game Rules  -----------------");
-        System.out.println("Enter a number that corresponds to the point");
-        System.out.println("on the board as shown in the example below.");
-        this.board.printDefaultBoard();
-        System.out.println("-------------  Game Rules  -----------------");
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("-------------  Game Rules  -----------------\n");
+        sb.append("Enter a number that corresponds to the point\n");
+        sb.append("on the board as shown in the example below.\n");
+        sb.append(this.board.printDefaultBoard() + "\n");
+        sb.append("-------------  Game Rules  -----------------");
+
+        ConsoleHelper.printData(sb.toString(), true);
     }
 
     // Builder Implementation
